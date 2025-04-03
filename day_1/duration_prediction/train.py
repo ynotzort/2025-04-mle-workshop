@@ -28,6 +28,13 @@ def read_dataframe(filename):
 
 
 def train(train_date: date, val_date: date, out_path: str):
+    """This function trains an ml model for price prediction of a taxi trip
+
+    Args:
+        train_date (date): the training month
+        val_date (date): the validation month
+        out_path (str): where to save the model
+    """
     base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_{year}-{month:02d}.parquet"
     train_url = base_url.format(year=train_date.year, month=train_date.month)
     val_url = base_url.format(year=val_date.year, month=val_date.month)
