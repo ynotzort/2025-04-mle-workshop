@@ -46,3 +46,5 @@ now we can run training via `make train`
 - in the test folder create a file `test_train.py`
 - in the folders `duration_prediction` and `tests` create empty files named `__init__.py`
 - run `uv run pytest`
+
+- you can also run the tests via `make tests` thanks to the Makefile
