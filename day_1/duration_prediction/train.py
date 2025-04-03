@@ -2,8 +2,8 @@
 # coding: utf-8
 from datetime import date
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+# import seaborn as sns
+# import matplotlib.pyplot as plt
 import pickle
 import argparse
 
@@ -12,19 +12,36 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.pipeline import make_pipeline
 
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+logger = logging.getLogger(__name__)
+
 
 def read_dataframe(filename):
-    df = pd.read_parquet(filename)
+    
+    logger.info(f"Reading df from {filename}")
+    try:
+        df = pd.read_parquet(filename)
 
-    df["duration"] = df.lpep_dropoff_datetime - df.lpep_pickup_datetime
-    df.duration = df.duration.dt.total_seconds() / 60
+        df["duration"] = df.lpep_dropoff_datetime - df.lpep_pickup_datetime
+        df.duration = df.duration.dt.total_seconds() / 60
 
-    df = df[(df.duration >= 1) & (df.duration <= 60)]
+        df = df[(df.duration >= 1) & (df.duration <= 60)]
 
-    categorical = ["PULocationID", "DOLocationID"]
-    df[categorical] = df[categorical].astype(str)
+        categorical = ["PULocationID", "DOLocationID"]
+        df[categorical] = df[categorical].astype(str)
+        
+        logger.debug(f"DF shape: {df.shape}")
 
-    return df
+        return df
+    except Exception as e:
+        logger.error(f"Error reading {filename}: {e}")
+        raise e
 
 
 def train(train_date: date, val_date: date, out_path: str):
@@ -35,36 +52,43 @@ def train(train_date: date, val_date: date, out_path: str):
         val_date (date): the validation month
         out_path (str): where to save the model
     """
-    base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_{year}-{month:02d}.parquet"
-    train_url = base_url.format(year=train_date.year, month=train_date.month)
-    val_url = base_url.format(year=val_date.year, month=val_date.month)
-    df_train = read_dataframe(train_url)
-    df_val = read_dataframe(val_url)
+    try:
+        base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_{year}-{month:02d}.parquet"
+        train_url = base_url.format(year=train_date.year, month=train_date.month)
+        val_url = base_url.format(year=val_date.year, month=val_date.month)
+        logger.debug(f"training data url: {train_url}")
+        logger.debug(f"validation data url: {val_url}")
 
-    print("the lengths of the dfs: ", len(df_train), len(df_val))
+        df_train = read_dataframe(train_url)
+        df_val = read_dataframe(val_url)
 
-    categorical = ["PULocationID", "DOLocationID"]
-    numerical = ["trip_distance"]
+        logger.debug(f"the lengths of the dfs: {len(df_train)}, {len(df_val)}", )
 
-    train_dicts = df_train[categorical + numerical].to_dict(orient="records")
-    val_dicts = df_val[categorical + numerical].to_dict(orient="records")
+        categorical = ["PULocationID", "DOLocationID"]
+        numerical = ["trip_distance"]
 
-    target = "duration"
-    y_train = df_train[target].values
-    y_val = df_val[target].values
+        train_dicts = df_train[categorical + numerical].to_dict(orient="records")
+        val_dicts = df_val[categorical + numerical].to_dict(orient="records")
 
-    pipeline = make_pipeline(DictVectorizer(), LinearRegression())
-    pipeline.fit(train_dicts, y_train)
-    y_pred = pipeline.predict(val_dicts)
+        target = "duration"
+        y_train = df_train[target].values
+        y_val = df_val[target].values
 
-    print(f"MSE: {mean_squared_error(y_val, y_pred, squared=False)}")
+        pipeline = make_pipeline(DictVectorizer(), LinearRegression())
+        pipeline.fit(train_dicts, y_train)
+        y_pred = pipeline.predict(val_dicts)
 
-    # sns.histplot(y_pred, kde=True, stat="density", color='blue', bins=25, label='prediction')
-    # sns.histplot(y_val, kde=True, stat="density", color='orange', bins=40, label='actual')
-    # plt.legend()
+        logger.info(f"MSE: {mean_squared_error(y_val, y_pred, squared=False)}")
 
-    with open(out_path, "wb") as f_out:
-        pickle.dump(pipeline, f_out)
+        # sns.histplot(y_pred, kde=True, stat="density", color='blue', bins=25, label='prediction')
+        # sns.histplot(y_val, kde=True, stat="density", color='orange', bins=40, label='actual')
+        # plt.legend()
+
+        with open(out_path, "wb") as f_out:
+            pickle.dump(pipeline, f_out)
+    except Exception as e:
+        logger.error(f"Error in training: {e}")
+        raise e
 
 def main():
     parser = argparse.ArgumentParser(description="Train a model based on specified dates and save it to a given path")
