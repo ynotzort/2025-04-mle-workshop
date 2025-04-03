@@ -23,3 +23,9 @@ Just run `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
 ### lets convert the notebook to a script
 - `uv run jupyter nbconvert --to=script notebooks/duration-prediction.ipynb`
+
+### lets make the script nicer
+
+see the git commits for the intermediate steps:
+- remove top level statements
+- make function parameterized
