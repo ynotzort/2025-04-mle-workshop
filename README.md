@@ -20,3 +20,6 @@ Just run `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - run `uv add scikit-learn==1.2.2 pandas pyarrow`
 - run `uv add --dev jupyter seaborn`
 - run `uv add numpy==1.26.4` to fix the issue with sklearn
+
+### lets convert the notebook to a script
+- `uv run jupyter nbconvert --to=script notebooks/duration-prediction.ipynb`
