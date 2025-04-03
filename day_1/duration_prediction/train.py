@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
+from datetime import date
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -10,45 +11,56 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.pipeline import make_pipeline
 
+
 def read_dataframe(filename):
     df = pd.read_parquet(filename)
 
-    df['duration'] = df.lpep_dropoff_datetime - df.lpep_pickup_datetime
+    df["duration"] = df.lpep_dropoff_datetime - df.lpep_pickup_datetime
     df.duration = df.duration.dt.total_seconds() / 60
 
     df = df[(df.duration >= 1) & (df.duration <= 60)]
 
-    categorical = ['PULocationID', 'DOLocationID']
+    categorical = ["PULocationID", "DOLocationID"]
     df[categorical] = df[categorical].astype(str)
-    
+
     return df
 
 
-df_train = read_dataframe('https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2022-01.parquet')
-df_val = read_dataframe('https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2022-02.parquet')
+def train(train_date: date, val_date: date, out_path: str):
+    base_url = "https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_{year}-{month:02d}.parquet"
+    train_url = base_url.format(year=train_date.year, month=train_date.month)
+    val_url = base_url.format(year=val_date.year, month=val_date.month)
+    df_train = read_dataframe(train_url)
+    df_val = read_dataframe(val_url)
 
-print("the lengths of the dfs: ", len(df_train), len(df_val))
+    print("the lengths of the dfs: ", len(df_train), len(df_val))
 
-categorical = ['PULocationID', 'DOLocationID']
-numerical = ['trip_distance']
+    categorical = ["PULocationID", "DOLocationID"]
+    numerical = ["trip_distance"]
 
-train_dicts = df_train[categorical + numerical].to_dict(orient='records')
-val_dicts = df_val[categorical + numerical].to_dict(orient='records')
+    train_dicts = df_train[categorical + numerical].to_dict(orient="records")
+    val_dicts = df_val[categorical + numerical].to_dict(orient="records")
 
-target = 'duration'
-y_train = df_train[target].values
-y_val = df_val[target].values
+    target = "duration"
+    y_train = df_train[target].values
+    y_val = df_val[target].values
 
-pipeline = make_pipeline(DictVectorizer(), LinearRegression())
-pipeline.fit(train_dicts, y_train)
-y_pred = pipeline.predict(val_dicts)
+    pipeline = make_pipeline(DictVectorizer(), LinearRegression())
+    pipeline.fit(train_dicts, y_train)
+    y_pred = pipeline.predict(val_dicts)
 
-print(f"MSE: {mean_squared_error(y_val, y_pred, squared=False)}")
+    print(f"MSE: {mean_squared_error(y_val, y_pred, squared=False)}")
 
-# sns.histplot(y_pred, kde=True, stat="density", color='blue', bins=25, label='prediction')
-# sns.histplot(y_val, kde=True, stat="density", color='orange', bins=40, label='actual')
-# plt.legend()
+    # sns.histplot(y_pred, kde=True, stat="density", color='blue', bins=25, label='prediction')
+    # sns.histplot(y_val, kde=True, stat="density", color='orange', bins=40, label='actual')
+    # plt.legend()
 
-with open('lin_reg.bin', 'wb') as f_out:
-    pickle.dump(pipeline, f_out)
+    with open(out_path, "wb") as f_out:
+        pickle.dump(pipeline, f_out)
 
+
+if __name__ == "__main__":
+    train_date = date(2022, 1, 1)
+    val_date = date(2022, 2, 1)
+    out_path = "model.bin"
+    train(train_date=train_date, val_date=val_date, out_path=out_path)
