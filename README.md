@@ -38,3 +38,11 @@ see the git commits for the intermediate steps:
 
 create a file called Makefile and insert content.
 now we can run training via `make train`
+
+
+### add tests
+- run `uv add pytest`
+- create a tests folder
+- in the test folder create a file `test_train.py`
+- in the folders `duration_prediction` and `tests` create empty files named `__init__.py`
+- run `uv run pytest`

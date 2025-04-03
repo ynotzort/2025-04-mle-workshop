@@ -44,7 +44,7 @@ def read_dataframe(filename):
         raise e
 
 
-def train(train_date: date, val_date: date, out_path: str):
+def train(train_date: date, val_date: date, out_path: str) -> float:
     """This function trains an ml model for price prediction of a taxi trip
 
     Args:
@@ -78,7 +78,8 @@ def train(train_date: date, val_date: date, out_path: str):
         pipeline.fit(train_dicts, y_train)
         y_pred = pipeline.predict(val_dicts)
 
-        logger.info(f"MSE: {mean_squared_error(y_val, y_pred, squared=False)}")
+        mse = mean_squared_error(y_val, y_pred, squared=False)
+        logger.info(f"MSE: {mse}")
 
         # sns.histplot(y_pred, kde=True, stat="density", color='blue', bins=25, label='prediction')
         # sns.histplot(y_val, kde=True, stat="density", color='orange', bins=40, label='actual')
@@ -86,6 +87,8 @@ def train(train_date: date, val_date: date, out_path: str):
 
         with open(out_path, "wb") as f_out:
             pickle.dump(pipeline, f_out)
+            
+        return mse
     except Exception as e:
         logger.error(f"Error in training: {e}")
         raise e
