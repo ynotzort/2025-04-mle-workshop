@@ -59,9 +59,7 @@ def train(train_date: date, val_date: date, out_path: str):
     with open(out_path, "wb") as f_out:
         pickle.dump(pipeline, f_out)
 
-
-if __name__ == "__main__":
-    
+def main():
     parser = argparse.ArgumentParser(description="Train a model based on specified dates and save it to a given path")
     parser.add_argument("--train-date", required=True, help="Training month in YYYY-MM format")
     parser.add_argument("--val-date", required=True, help="Validation month in YYYY-MM format")
@@ -82,3 +80,7 @@ if __name__ == "__main__":
     val_date = date(val_year, val_month, 1)
     out_path = args.model_save_path
     train(train_date=train_date, val_date=val_date, out_path=out_path)
+
+
+if __name__ == "__main__":
+    main()
