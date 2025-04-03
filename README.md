@@ -31,3 +31,4 @@ see the git commits for the intermediate steps:
 - make function parameterized
 - introduce argparse
     - make it run via `uv run python duration_prediction/train.py --train-date 2022-01 --val-date 2022-02 --model-save-path models/2022-01.bin`
+- add docstrings: eg use autodocstring extension in vscode or chatgpt
