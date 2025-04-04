@@ -96,3 +96,15 @@ add commands to the makefile:
 - `uv add gunicorn`
 - usually you would run it via `uv run gunicorn --bind=0.0.0.0:9696 src.duration_pred_serve.serve:app`
 - but we just update the entrypoint for our dockerfile
+
+
+### use fly.io for deployment
+- create account at fly.io
+- install flyctl: `curl -L https://fly.io/install.sh | sh`
+- run 
+```
+export FLYCTL_INSTALL="/home/codespace/.fly"
+export PATH="$FLYCTL_INSTALL/bin:$PATH"
+```
+- you can also copy those lines to you ~/.bashrc
+- run `flyctl launch`
