@@ -1,10 +1,13 @@
 import pickle
 from flask import Flask, request, jsonify
+import os
 
-with open("./models/2022-01.bin", "rb") as f_in:
+MODEL_PATH = os.getenv("MODEL_PATH", "model.bin")
+VERSION = os.getenv("VERSION", "not defined")
+
+with open(MODEL_PATH, "rb") as f_in:
     model = pickle.load(f_in)
 
-VERSION = "0.0.1"
 # trip = {
 #     "PULocationID": "43",
 #     "DOLocationID": "238",
