@@ -62,6 +62,7 @@ now we can run training via `make train`
 - add Flask and pytest: `uv add flask pytest`
 - add requests: `uv add --dev requests`
 - copy over model from day 1
+- add loguru `uv add loguru`
 
 ### ping example
 - can be run via `uv run python src/duration_pred_serve/ping.py`
@@ -82,3 +83,6 @@ now we can run training via `make train`
 have a look into export
 on the python side we use os.getenv
 
+### add logging via loguru
+- added via uv add loguru
+- use it via `from loguru import logger`
