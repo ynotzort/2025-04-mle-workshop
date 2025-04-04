@@ -90,3 +90,9 @@ on the python side we use os.getenv
 ### use docker
 add commands to the makefile:
 - `make docker_build` and `make docker_run`
+
+
+### use gunicorn for production
+- `uv add gunicorn`
+- usually you would run it via `uv run gunicorn --bind=0.0.0.0:9696 src.duration_pred_serve.serve:app`
+- but we just update the entrypoint for our dockerfile

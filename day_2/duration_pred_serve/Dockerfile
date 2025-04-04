@@ -20,4 +20,8 @@ ENV VERSION 2022-01-v01
 ENV LOGURU_LEVEL INFO
 
 EXPOSE 9696
-ENTRYPOINT [ "uv", "run", "python", "/app/duration_pred_serve/serve.py" ]
+ENTRYPOINT [ "uv", \
+             "run", \
+             "gunicorn", \
+             "--bind=0.0.0.0:9696", \
+             "duration_pred_serve.serve:app" ]
