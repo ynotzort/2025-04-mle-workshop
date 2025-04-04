@@ -61,3 +61,8 @@ now we can run training via `make train`
 - add dependencies from day_1: `uv add scikit-learn==1.2.2 numpy==1.26.4`
 - add Flask and pytest: `uv add flask pytest`
 - copy over model from day 1
+
+### ping example
+- can be run via `uv run python src/duration_pred_serve/ping.py`
+- then you can look at it via browser `http://127.0.0.1:9696/ping`
+- `curl 127.0.0.1:9696/ping`
