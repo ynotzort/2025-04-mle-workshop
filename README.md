@@ -77,3 +77,8 @@ now we can run training via `make train`
 - run via Makefile:
     - make run
     - make predict-test
+    
+### use environment variables
+have a look into export
+on the python side we use os.getenv
+
