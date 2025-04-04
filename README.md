@@ -73,3 +73,7 @@ now we can run training via `make train`
 - test it via curl:
 `curl -X POST -d '{"PULocationID": "43", "DOLocationID": "238", "trip_distance": 1.16}' -H "Content-Type: application/json" 127.0.0.1:9696/predict`
 - or via requests: `uv run python integration-tests/predict-test.py`
+
+- run via Makefile:
+    - make run
+    - make predict-test
