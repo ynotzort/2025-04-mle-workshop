@@ -48,3 +48,8 @@ now we can run training via `make train`
 - run `uv run pytest`
 
 - you can also run the tests via `make tests` thanks to the Makefile
+
+### make it runnable as a module
+- move some code to the main.py file
+- run it via `uv run python -m duration_prediction.main` instead of `uv run python duration_prediction/main.py`
+
