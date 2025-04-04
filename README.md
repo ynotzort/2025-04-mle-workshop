@@ -60,9 +60,16 @@ now we can run training via `make train`
 - `uv init --lib --python 3.10 duration_pred_serve`
 - add dependencies from day_1: `uv add scikit-learn==1.2.2 numpy==1.26.4`
 - add Flask and pytest: `uv add flask pytest`
+- add requests: `uv add --dev requests`
 - copy over model from day 1
 
 ### ping example
 - can be run via `uv run python src/duration_pred_serve/ping.py`
 - then you can look at it via browser `http://127.0.0.1:9696/ping`
 - `curl 127.0.0.1:9696/ping`
+
+### implement serve
+- run it via `uv run python src/duration_pred_serve/serve.py`
+- test it via curl:
+`curl -X POST -d '{"PULocationID": "43", "DOLocationID": "238", "trip_distance": 1.16}' -H "Content-Type: application/json" 127.0.0.1:9696/predict`
+- or via requests: `uv run python integration-tests/predict-test.py`
