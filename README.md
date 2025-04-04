@@ -86,3 +86,7 @@ on the python side we use os.getenv
 ### add logging via loguru
 - added via uv add loguru
 - use it via `from loguru import logger`
+
+### use docker
+add commands to the makefile:
+- `make docker_build` and `make docker_run`
