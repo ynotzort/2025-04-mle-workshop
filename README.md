@@ -53,3 +53,11 @@ now we can run training via `make train`
 - move some code to the main.py file
 - run it via `uv run python -m duration_prediction.main` instead of `uv run python duration_prediction/main.py`
 
+
+## Day 2
+
+### create the project
+- `uv init --lib --python 3.10 duration_pred_serve`
+- add dependencies from day_1: `uv add scikit-learn==1.2.2 numpy==1.26.4`
+- add Flask and pytest: `uv add flask pytest`
+- copy over model from day 1
