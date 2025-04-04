@@ -42,7 +42,8 @@ def predict_endpoint():
     prediction = predict(features)
     
     result = {
-        "prediction": {"duration" : prediction}
+        "prediction": {"duration" : prediction},
+        "version": VERSION,
     }
     return jsonify(result)
 

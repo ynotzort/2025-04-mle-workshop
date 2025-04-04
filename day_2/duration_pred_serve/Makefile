@@ -1,3 +1,5 @@
+VERSION = 2022-01-v01
+export VERSION
 
 .PHONY: run
 run:
